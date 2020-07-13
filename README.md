@@ -1,6 +1,34 @@
 # BERT
 Bit-Efficient Replicator Tech for X, Y, Z axis motor control (3D printers)
 
+Open Source license: MIT (except for VUnit).
+
+1. Dependencies
+
+SHELL
+
+bashrc on macos (one can add more shells, it is needed to setup directory and
+path). In the project bin directory I link to the macos specific files, so one
+could have another os and replace the links.
+
+HDL
+
+VHDL (currently)
+Systemverilog (planned)
+Every unit will have both a VHDL and verilog variant that need to be kept in sync.
+
+VUnit
+
+It is licensed under Mozilla Public License v2.0.
+Install: search for vunit getting started on the internet.
+
+2. HOWTO
+
+setup.bash
+
+
+3. GOAL
+
 Open source development of the digital circuit desciption in both VHDL and verilog (systemverilog).
 Every source file has a VHDL and a verilog equivalent for training and educational purposes.
 

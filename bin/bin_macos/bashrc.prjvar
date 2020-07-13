@@ -32,3 +32,6 @@ export BIN_PATH="$PRJ_PATH/bin"         # bin is where the scripts reside
 # The HDL source code directory name is free to choose, default = "hdlsrc"
 export HWDIR_NAME="hdlsrc"
 export HWDIR_PATH="$PRJ_PATH/$HWDIR_NAME"
+
+# PATH
+export PATH="./bin:$PATH"
