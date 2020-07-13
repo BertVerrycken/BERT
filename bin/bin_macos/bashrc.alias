@@ -1,0 +1,38 @@
+#!/bin/bash
+
+## get rid of command not found ##
+alias cd..='cd ..'
+## a quick way to get out of current directory ##
+alias .1='cd ..'
+alias .2='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
+
+# mkdir with parent
+alias mkdir='mkdir -pv'
+
+# handy short cuts #
+alias h='history'
+alias j='jobs -l'
+
+# stop after sending count ECHO_REQUEST packets #
+alias ping='ping -c 5'
+# Do not wait interval 1 second, go fast #
+alias fastping='ping -c 100 -s.2'
+
+# open ports
+alias ports='netstat -tulanp'
+
+# do not delete / or prompt if deleting more than 3 files at a time #
+alias rm='rm -I --preserve-root'
+ 
+# confirmation #
+alias mv='mv -i'
+alias cp='cp -i'
+alias ln='ln -i'
+ 
+# Parenting changing perms on / #
+alias chown='chown --preserve-root'
+alias chmod='chmod --preserve-root'
+alias chgrp='chgrp --preserve-root'

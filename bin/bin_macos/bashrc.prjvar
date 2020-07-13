@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export PRJ_NAME="BERT"
+export HOME_DIR=$(pwd|sed "s/.BERT.*//g")
+
+# Name of the project
+export PRJ_PATH="$HOME_DIR/$PRJ_NAME"
+export BIN_PATH="$PRJ_PATH/bin"         # bin is where the scripts reside
+
+# The HDL source code directory name is free to choose, default = "hdlsrc"
+export HWDIR_NAME="hdlsrc"
+export HWDIR_PATH="$PRJ_DIR/$HWDIR_NAME"
