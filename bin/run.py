@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # MIT License
 #
 #  Copyright (c) 2020, Bert Verrycken, bertv@verrycken.com
@@ -22,26 +20,44 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## get rid of command not found ##
-alias cd..='cd ..'
-## a quick way to get out of current directory ##
-alias .1='cd ..'
-alias .2='cd ../..'
-alias .3='cd ../../..'
-alias .4='cd ../../../..'
-alias .5='cd ../../../../..'
+from pathlib import Path
+from vunit   import VUnit
+import os
 
-# mkdir with parent
-alias mkdir='mkdir -pv'
+# Where are we
+key = 'PRJ_NAME'
+PRJNAME  = os.getenv(key)
+SRC_PATH = Path(__file__).parent
+SRC_PATH_RES = SRC_PATH.resolve()
+SRC_PATH_PTS = SRC_PATH_RES.parts
 
-# handy short cuts #
-alias h='history'
-alias j='jobs -l'
+CNT=99 # absurd value
+UNIT=""
+for i in SRC_PATH_PTS:
+    if (i == PRJNAME):
+        CNT = 0 # root of project found
+    else:
+        CNT+=1
 
-# stop after sending count ECHO_REQUEST packets #
-alias ping='ping -c 5'
-# Do not wait interval 1 second, go fast #
-alias fastping='ping -c 100 -s.2'
+VU = VUnit.from_argv()
+VU.add_osvvm()
+VU.add_verification_components()
 
-# open ports
-alias ports='netstat -tulanp'
+#print("level", SRC_PATH_PTS[-1], CNT)
+LEVEL=SRC_PATH_PTS[-1]
+if (CNT==0):
+    print("level", SRC_PATH_PTS[-1])
+if (CNT==1):
+    print("hdlsrc level", SRC_PATH_PTS[-1])
+if (CNT==2):
+    print("UNIT level", SRC_PATH_PTS[-1])
+    SRC_PATH = Path(__file__).parent / "rtl"
+    if (Path(SRC_PATH).exists()):
+        LIB=VU.add_library(LEVEL)
+        FILES=LIB.add_source_files([SRC_PATH / "*.vhd"])
+        VU.main()
+    else:
+        print("This path doesn't exist")
+if (CNT>2):
+    print("Level not supported") # Something went wrong
+    raise SystemExit
