@@ -24,7 +24,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity motoroctrl_a4988 is
+entity motorctrl_a4988 is
 port(   -- Clock and Reset --
         clk:            in  std_logic;
         rst_n:          in  std_logic;

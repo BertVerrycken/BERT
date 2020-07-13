@@ -30,13 +30,16 @@ architecture rtl of motorctrl_a4988 is
 begin
 
   a4988_proc: process(clk, rst_n)
+    variable toggle: std_logic;
   begin
     if (rst_n = '0') then
       step      <= '0';
       dir       <= '0';
+      toggle    := '0';
     elsif rising_edge(clk) then
-      step      <= not(step);
-      dir       <= not(dir);
+      step      <= toggle;
+      dir       <= toggle;
+      toggle    := not(toggle);
     end if;
   end process;
 
