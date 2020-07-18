@@ -27,19 +27,85 @@ use IEEE.numeric_std.all;
 
 architecture rtl of motorctrl_a4988 is
 
-begin
+  -- Make it locally static (VHDL quirk)
+  constant C_AD_WIDTH: natural := G_AD_WIDTH;
 
+  -- Define address map in words (32-bit wide):
+  -- => Configuration of the motor
+  -- => Status of the motor<
+  constant c_addr_config : natural := 0;
+  constant c_addr_status : natural := 1;
+begin
+  -- Motor driver IC process for A4988 board
+  -- The process only updates the data registers when the slave is addressed
+  -- and only if the address matches a register.
   a4988_proc: process(clk, rst_n)
-    variable toggle: std_logic;
+    variable toggle:    std_logic;
+    variable ReadBusy:  boolean;
+    -- Registered version of read address
+    variable ReadAddr: natural range 0 to 2**C_AD_WIDTH-1;
+    -- Registers
+    variable RegStatus: std_logic_vector(G_D_WIDTH-1 downto 0);
+    variable RegConfig: std_logic_vector(G_D_WIDTH-1 downto 0);
   begin
     if (rst_n = '0') then
       step      <= '0';
       dir       <= '0';
       toggle    := '0';
+      ReadBusy  := false;
+      ReadAddr  := 0;
+      axils_s2m <= axil_s2m_init;
     elsif rising_edge(clk) then
       step      <= toggle;
       dir       <= toggle;
       toggle    := not(toggle);
+      -- ADDRESS and DATA PHASE are decoupled in AXI protocol
+      axils_s2m.ar.ready        <= '0';
+      axils_s2m.aw.ready        <= '0';
+      axils_s2m.w.ready         <= '0';
+      axils_s2m.r.valid         <= '0';
+      axils_s2m.r.data          <= (others => '0');
+      -- ===============================
+      -- == READ: DATA PHASE          ==
+      -- ===============================
+      if ReadBusy then
+        -- Slave has received address, slave asserts read data valid
+        axils_s2m.r.valid       <= '1';
+        ReadBusy                := false;
+          -- 32-bit addressing: drop lower two bits (byte address)
+          case (ReadAddr) is
+            when c_addr_config =>
+              axils_s2m.r.data      <= RegConfig;
+            when c_addr_status =>
+              axils_s2m.r.data      <= RegStatus;
+            when others =>
+              -- Undefined register, error response
+              axils_s2m.b.resp      <= axi_response_decerr;
+          end case;
+      end if;
+      -- ===============================
+      -- == READ: ADDRESS PHASE       ==
+      -- ===============================
+      -- If the slave is selected for read access
+      if (axils_m2s_rsel) then
+        -- Master: ar_valid (address valid), r_ready (ready to accept data)
+        if (axils_m2s.ar.valid = '1') then
+          -- Slave: address ready + capture address
+          axils_s2m.ar.ready    <= '1';
+          ReadBusy              := false;
+          axils_s2m.r.resp      <= axi_response_ok;
+          -- 32-bit addressing: drop lower two bits (byte address)
+          case (ReadAddr) is
+            when c_addr_config|c_addr_status =>
+              ReadBusy          := true;
+              ReadAddr          :=
+                to_integer(unsigned(axils_m2s.ar.addr(C_AD_WIDTH+1 downto 2)));
+            when others =>
+              null;
+          end case;
+        end if;
+      end if;
+
     end if;
   end process;
 

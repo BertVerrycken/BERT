@@ -24,10 +24,22 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
+-- AXI Lite package
+use work.axil_pkg.all;
+use work.axi_pkg.axi_response_ok;
+use work.axi_pkg.axi_response_decerr;
+
 entity motorctrl_a4988 is
+  generic(G_AD_WIDTH: natural := 2;
+          G_D_WIDTH:  natural := 32);
 port(   -- Clock and Reset --
         clk:            in  std_logic;
         rst_n:          in  std_logic;
+        -- AXI Lite
+        axils_m2s_rsel: in boolean;
+        axils_m2s_wsel: in boolean;
+        axils_m2s:      in axil_m2s_t;
+        axils_s2m:      out axil_s2m_t := axil_s2m_init;
         -- A4988 stepper driver IC --
         step:           out std_logic;
         dir:            out std_logic
