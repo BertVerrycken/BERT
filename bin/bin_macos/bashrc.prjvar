@@ -24,11 +24,14 @@
 
 export PRJ_NAME="BERT"
 export HOME_PATH=$(pwd|sed "s/.BERT.*//g")
-
 # Name of the project
 export PRJ_PATH="$HOME_PATH/$PRJ_NAME"
 export BIN_PATH="$PRJ_PATH/bin"         # bin is where the scripts reside
 
+# FuseSoC (reuse System-On-Chip)
+export XDG_CONFIG_HOME="$PRJ_PATH/fusesoc/.config"      # usually ~/.config
+export XDG_DATA_HOME="$PRJ_PATH/fusesoc/.share"         # usually ~/.local/share
+export PYTHONPATH="$HOME_PATH/fusesoc:$HOME_PATH/vunit"
 # The HDL source code directory name is free to choose, default = "hdlsrc"
 export HWDIR_NAME="hdlsrc"
 export HWDIR_PATH="$PRJ_PATH/$HWDIR_NAME"
