@@ -29,19 +29,9 @@ use work.axil_pkg.all;
 use work.axi_pkg.axi_response_ok;
 use work.axi_pkg.axi_response_decerr;
 
-entity motorctrl_a4988 is
-  generic(G_AD_WIDTH: natural := 2;
-          G_D_WIDTH:  natural := 32);
-port(   -- Clock and Reset --
-        clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        -- AXI Lite
-        axils_rsel:     in  boolean;
-        axils_wsel:     in  boolean;
-        axils_m2s:      in  axil_m2s_t;
-        axils_s2m:      out axil_s2m_t := axil_s2m_init;
-        -- A4988 stepper driver IC --
-        step:           out std_logic;
-        dir:            out std_logic
-    );
-end entity;
+architecture rtl of axim_wrap is
+begin
+
+  axilm_m2s             <= axil_m2s_init;
+
+end architecture;

@@ -24,24 +24,12 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
--- AXI Lite package
-use work.axil_pkg.all;
-use work.axi_pkg.axi_response_ok;
-use work.axi_pkg.axi_response_decerr;
-
-entity motorctrl_a4988 is
-  generic(G_AD_WIDTH: natural := 2;
-          G_D_WIDTH:  natural := 32);
-port(   -- Clock and Reset --
-        clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        -- AXI Lite
-        axils_rsel:     in  boolean;
-        axils_wsel:     in  boolean;
-        axils_m2s:      in  axil_m2s_t;
-        axils_s2m:      out axil_s2m_t := axil_s2m_init;
-        -- A4988 stepper driver IC --
-        step:           out std_logic;
-        dir:            out std_logic
-    );
+entity switchdebounce is
+  generic(G_MAX_COUNT:  natural := 1024;
+          G_WIDTH:      natural := 8);
+  port(clk:            in  std_logic;
+       rst_n:          in  std_logic;
+       gpio_in:        in  std_logic_vector(G_WIDTH-1 downto 0);
+       gpio_out:       out std_logic_vector(G_WIDTH-1 downto 0)
+       );
 end entity;
