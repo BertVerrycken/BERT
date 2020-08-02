@@ -31,16 +31,19 @@ use work.axi_pkg.axi_response_decerr;
 
 architecture str of BERT is
 
+  constant C_WIN:  natural := G_WIDTH_GPIO_IN;
+  constant C_WOUT: natural := G_WIDTH_GPIO_OUT;
+
   -- -----------------------------------------------
   -- ---- Debouncer                             ----
   -- -----------------------------------------------
   component switchdebounce
     generic(G_MAX_COUNT: natural := 1024;
-            G_WIDTH:     natural := 8);
+            G_WIDTH:     natural := C_WIN);
     port (clk:          in  std_logic;
           rst_n:        in  std_logic;
-          gpio_in:      in  std_logic_vector(G_WIDTH-1 downto 0);
-          gpio_out:     out std_logic_vector(G_WIDTH-1 downto 0)
+          gpio_in:      in  std_logic_vector(C_WIN-1 downto 0);
+          gpio_out:     out std_logic_vector(C_WIN-1 downto 0)
           );
   end component;
 
@@ -109,7 +112,7 @@ architecture str of BERT is
   -- -----------------------------------------------
   signal sysrst_n:      std_logic;
   signal sysclk:        std_logic;
-  signal gpio_in_clean: std_logic_vector(7 downto 0);
+  signal gpio_in_clean: std_logic_vector(C_WIN-1 downto 0);
   signal axils_rsel:    boolean;
   signal axils_wsel:    boolean;
   -- Master to arbiter
