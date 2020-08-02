@@ -24,24 +24,29 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
--- AXI Lite package
-use work.axil_pkg.all;
-use work.axi_pkg.axi_response_ok;
-use work.axi_pkg.axi_response_decerr;
+architecture rtl of clkrst is
 
-entity motorctrl_a4988 is
-  generic(G_AD_WIDTH: natural := 2;
-          G_D_WIDTH:  natural := 32);
-port(   -- Clock and Reset --
-        clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        -- AXI Lite
-        axils_rsel:     in  boolean;
-        axils_wsel:     in  boolean;
-        axils_m2s:      in  axil_m2s_t;
-        axils_s2m:      out axil_s2m_t := axil_s2m_init;
-        -- A4988 stepper driver IC --
-        step:           out std_logic;
-        dir:            out std_logic
-    );
-end entity;
+  signal rst_n_z1: std_logic;
+  signal rst_n_z2: std_logic;
+
+begin
+
+  sysrst_n              <= rst_n_z2;
+  sysclk                <= clk; -- Use the clock pin as system clock
+
+  -- The reset is entered asynchronously whenever the reset external pin is
+  -- pulled active low. The reset exits synchronous on the rising edge of the
+  -- clock to make sure all flipflops exit the reset state in a clean way.
+  process_rst_sync:process(clk, rst_n)
+  begin
+    if (rst_n = '0') then
+      rst_n_z1            <= '1';
+      rst_n_z1            <= '1';
+    elsif (rising_edge(clk)) then
+      -- Double flip-flop synchronizer
+      rst_n_z1            <= rst_n;
+      rst_n_z2            <= rst_n_z1;
+    end if;
+  end process;
+
+end architecture;
