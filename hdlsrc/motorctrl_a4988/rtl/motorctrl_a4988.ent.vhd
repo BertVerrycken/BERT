@@ -36,9 +36,9 @@ port(   -- Clock and Reset --
         clk:            in  std_logic;
         rst_n:          in  std_logic;
         -- AXI Lite
-        axils_m2s_rsel: in boolean;
-        axils_m2s_wsel: in boolean;
-        axils_m2s:      in axil_m2s_t;
+        axils_rsel:     in  boolean;
+        axils_wsel:     in  boolean;
+        axils_m2s:      in  axil_m2s_t;
         axils_s2m:      out axil_s2m_t := axil_s2m_init;
         -- A4988 stepper driver IC --
         step:           out std_logic;

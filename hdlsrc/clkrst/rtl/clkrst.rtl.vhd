@@ -24,12 +24,29 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity BERT is
-  generic(G_WIDTH_GPIO_IN:  natural      := 4;
-          G_WIDTH_GPIO_OUT: natural      := 2);
-  port (clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        gpio_in:        in  std_logic_vector(G_WIDTH_GPIO_IN-1 downto 0);
-        gpio_out:       out std_logic_vector(G_WIDTH_GPIO_OUT-1 downto 0)
-        );
-end entity;
+architecture rtl of clkrst is
+
+  signal rst_n_z1: std_logic;
+  signal rst_n_z2: std_logic;
+
+begin
+
+  sysrst_n              <= rst_n_z2;
+  sysclk                <= clk; -- Use the clock pin as system clock
+
+  -- The reset is entered asynchronously whenever the reset external pin is
+  -- pulled active low. The reset exits synchronous on the rising edge of the
+  -- clock to make sure all flipflops exit the reset state in a clean way.
+  process_rst_sync:process(clk, rst_n)
+  begin
+    if (rst_n = '0') then
+      rst_n_z1            <= '1';
+      rst_n_z1            <= '1';
+    elsif (rising_edge(clk)) then
+      -- Double flip-flop synchronizer
+      rst_n_z1            <= rst_n;
+      rst_n_z2            <= rst_n_z1;
+    end if;
+  end process;
+
+end architecture;

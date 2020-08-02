@@ -24,12 +24,17 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity BERT is
-  generic(G_WIDTH_GPIO_IN:  natural      := 4;
-          G_WIDTH_GPIO_OUT: natural      := 2);
-  port (clk:            in  std_logic;
+-- AXI Lite package
+use work.axil_pkg.all;
+use work.axi_pkg.axi_response_ok;
+use work.axi_pkg.axi_response_decerr;
+
+entity axim_wrap is
+port(   -- Clock and Reset --
+        clk:            in  std_logic;
         rst_n:          in  std_logic;
-        gpio_in:        in  std_logic_vector(G_WIDTH_GPIO_IN-1 downto 0);
-        gpio_out:       out std_logic_vector(G_WIDTH_GPIO_OUT-1 downto 0)
-        );
+        -- AXI Lite master interface
+        axilm_m2s:      out axil_m2s_t;
+        axilm_s2m:      in  axil_s2m_t
+    );
 end entity;

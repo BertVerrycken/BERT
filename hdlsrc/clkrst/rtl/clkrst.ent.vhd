@@ -24,12 +24,10 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity BERT is
-  generic(G_WIDTH_GPIO_IN:  natural      := 4;
-          G_WIDTH_GPIO_OUT: natural      := 2);
-  port (clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        gpio_in:        in  std_logic_vector(G_WIDTH_GPIO_IN-1 downto 0);
-        gpio_out:       out std_logic_vector(G_WIDTH_GPIO_OUT-1 downto 0)
-        );
+entity clkrst is
+  port(clk:             in  std_logic;
+       rst_n:           in  std_logic;
+       sysclk:          out std_logic;
+       sysrst_n:        out std_logic
+       );
 end entity;

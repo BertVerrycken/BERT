@@ -91,7 +91,7 @@ begin
       -- == READ: ADDRESS PHASE       ==
       -- ===============================
       -- If the slave is selected for read access
-      if (axils_m2s_rsel) then
+      if (axils_rsel) then
         -- Master: ar_valid (address valid), r_ready (ready to accept data)
         if (axils_m2s.ar.valid = '1') then
           -- Slave: address ready + capture address
@@ -144,7 +144,7 @@ begin
       -- == WRITE: ADDRESS PHASE      ==
       -- ===============================
       -- If the slave is selected for read access
-      if (axils_m2s_wsel) then
+      if (axils_wsel) then
         -- Master: ar_valid (address valid), r_ready (ready to accept data)
         if (axils_m2s.aw.valid = '1') then
           -- Slave: address ready + capture address

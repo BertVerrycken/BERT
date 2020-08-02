@@ -24,12 +24,20 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
-entity BERT is
-  generic(G_WIDTH_GPIO_IN:  natural      := 4;
-          G_WIDTH_GPIO_OUT: natural      := 2);
-  port (clk:            in  std_logic;
-        rst_n:          in  std_logic;
-        gpio_in:        in  std_logic_vector(G_WIDTH_GPIO_IN-1 downto 0);
-        gpio_out:       out std_logic_vector(G_WIDTH_GPIO_OUT-1 downto 0)
-        );
-end entity;
+-- AXI Lite package
+use work.axil_pkg.all;
+use work.axi_pkg.axi_response_ok;
+use work.axi_pkg.axi_response_decerr;
+
+architecture rtl of axi_arbiter is
+begin
+
+  -- AXI Lite Slave (axils) master to slave (m2s) bus is the AXI Lite m2s
+  axils_m2s             <= axilm_m2s;
+  -- AXI Lite Master (axilm) slave to master (s2m) is the slave answer
+  axilm_s2m             <= axils_s2m;
+
+  axils_rsel            <= true;
+  axils_wsel            <= true;
+
+end architecture;
