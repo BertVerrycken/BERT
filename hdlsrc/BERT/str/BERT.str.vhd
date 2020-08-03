@@ -84,8 +84,8 @@ architecture str of BERT is
   component axim_wrap
   port(clk:             in  std_logic;
        rst_n:           in  std_logic;
-       axilm_m2s:       in  axil_m2s_t;
-       axilm_s2m:       out axil_s2m_t
+       axilm_m2s:       out axil_m2s_t;
+       axilm_s2m:       in  axil_s2m_t
        );
   end component;
 
