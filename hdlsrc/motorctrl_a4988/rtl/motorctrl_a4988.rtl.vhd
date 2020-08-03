@@ -50,15 +50,16 @@ begin
     variable RegConfig: std_logic_vector(G_D_WIDTH-1 downto 0);
   begin
     if (rst_n = '0') then
-      step      <= '0';
-      dir       <= '0';
-      toggle    := '0';
-      ReadBusy  := false;
-      WriteBusy := false;
-      WrespBusy := false;
-      ReadAddr  := 0;
-      WriteAddr := 0;
-      axils_s2m <= axil_s2m_init;
+      step              <= '0';
+      dir               <= '0';
+      toggle            := '0';
+      ReadBusy          := false;
+      WriteBusy         := false;
+      WrespBusy         := false;
+      ReadAddr          := 0;
+      WriteAddr         := 0;
+      motor_active      <= '0';
+      axils_s2m         <= axil_s2m_init;
     elsif rising_edge(clk) then
       step      <= toggle;
       dir       <= toggle;
@@ -133,6 +134,7 @@ begin
           case (WriteAddr) is
             when c_addr_config =>
               RegConfig         := axils_m2s.w.data;
+              motor_active      <= axils_m2s.w.data(0);
             when c_addr_status =>
               RegStatus         := axils_m2s.w.data;
             when others =>
