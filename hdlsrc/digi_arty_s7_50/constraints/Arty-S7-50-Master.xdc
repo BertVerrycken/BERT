@@ -181,7 +181,7 @@ set_property -dict { PACKAGE_PIN N13   IOSTANDARD LVCMOS33 } [get_ports { a4988[
 
 ## Misc. ChipKit signals
 #set_property -dict { PACKAGE_PIN K13   IOSTANDARD LVCMOS33 } [get_ports { ck_ioa }]; #IO_25_15 Sch=ck_ioa
-set_property -dict { PACKAGE_PIN C18   IOSTANDARD LVCMOS33 } [get_ports { ck_rst }]; #IO_L11N_T1_SRCC_15
+#set_property -dict { PACKAGE_PIN C18   IOSTANDARD LVCMOS33 } [get_ports { ck_rst }]; #IO_L11N_T1_SRCC_15
 
 
 ## Quad SPI Flash

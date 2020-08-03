@@ -77,7 +77,6 @@ entity GPIO_demo is
     Port ( SW       : in  STD_LOGIC_VECTOR (3 downto 0);
            BTN       : in  STD_LOGIC_VECTOR (3 downto 0);
            CLK        : in  STD_LOGIC;
-           CK_RST:       in STD_LOGIC;
            LED       : out  STD_LOGIC_VECTOR (3 downto 0);
            UART_TXD   : out  STD_LOGIC;
            led0_r    : out  STD_LOGIC;
@@ -282,6 +281,8 @@ signal clk_cntr_reg : std_logic_vector (4 downto 0) := (others=>'0');
 --this counter counts the amount of time paused in the UART reset state
 signal reset_cntr : unsigned (17 downto 0) := (others=>'0');
 
+signal reset_strap: std_logic := '1';
+
 begin
 
   -- ===============================================
@@ -294,7 +295,7 @@ begin
   generic map(G_WIDTH_GPIO_IN  => 4,
               G_WIDTH_GPIO_OUT => 2)
   port map(clk          => CLK,
-           rst_n        => CK_RST,
+           rst_n        => reset_strap,
            gpio_in      => BTN,
            gpio_out     => a4988
            );
