@@ -30,8 +30,52 @@ use work.axi_pkg.axi_response_ok;
 use work.axi_pkg.axi_response_decerr;
 
 architecture rtl of axim_wrap is
+  type T_AXIM_FSM is    (E_IDLE, E_ADDR, E_DATA);
+  signal start_stop_z1: boolean;
+  signal motor_on:      boolean;
 begin
 
-  axilm_m2s             <= axil_m2s_init;
+  process_aximaster: process(clk, rst_n)
+    variable axim_fsm:  T_AXIM_FSM;
+  begin
+    if (rst_n = '0') then
+      axilm_m2s         <= axil_m2s_init;
+      start_stop_z1     <= false;
+      motor_on          <= FALSE;
+      axim_fsm          := E_IDLE;
+    elsif (rising_edge(clk)) then
+      start_stop_z1     <= start_stop;
+      axilm_m2s         <= axil_m2s_init;
+      -- Avoid seperate flipflop
+      case axim_fsm is
+        when E_IDLE =>
+          -- Rising edge = button pressed
+          if (start_stop /= start_stop_z1) then
+            axim_fsm    := E_ADDR;
+          end if;
+        when E_ADDR =>
+          axilm_m2s.aw.valid <= '1';
+          axilm_m2s.aw.addr  <= (others => '0');
+          if (axilm_s2m.aw.ready = '1') then
+            axim_fsm   := E_DATA;
+          end if;
+        when E_DATA =>
+          axilm_m2s.w.valid  <= '1';
+          if not(motor_on) then
+            axilm_m2s.w.data   <= (0 => '1', others => '0'); -- Enable bit
+            motor_on    <= true;
+          else
+            axilm_m2s.w.data   <= (others => '0'); -- Disable bit
+            motor_on    <= false;
+          end if;
+          if ((axilm_s2m.b.resp = axi_response_ok) and
+              (axilm_s2m.b.valid = '1') and
+              (axilm_s2m.w.ready = '1')) then
+            axilm_m2s.b.ready <= '1';
+            axim_fsm    := E_IDLE;
+          end if;
+      end case;
+    end if;
+  end process;
 
 end architecture;

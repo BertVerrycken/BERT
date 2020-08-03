@@ -41,6 +41,7 @@ port(   -- Clock and Reset --
         axils_m2s:      in  axil_m2s_t;
         axils_s2m:      out axil_s2m_t := axil_s2m_init;
         -- A4988 stepper driver IC --
+        motor_active:   out std_logic;
         step:           out std_logic;
         dir:            out std_logic
     );

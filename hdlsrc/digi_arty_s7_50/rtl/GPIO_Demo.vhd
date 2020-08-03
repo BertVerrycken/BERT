@@ -283,6 +283,8 @@ signal reset_cntr : unsigned (17 downto 0) := (others=>'0');
 
 signal reset_strap: std_logic := '1';
 
+signal gpio_out: std_logic_vector(2 downto 0);
+
 begin
 
   -- ===============================================
@@ -293,19 +295,22 @@ begin
   --
   i_BERT: BERT
   generic map(G_WIDTH_GPIO_IN  => 4,
-              G_WIDTH_GPIO_OUT => 2)
+              G_WIDTH_GPIO_OUT => 3)
   port map(clk          => CLK,
            rst_n        => reset_strap,
            gpio_in      => BTN,
-           gpio_out     => a4988
+           gpio_out     => gpio_out
            );
+
+  a4988                 <= gpio_out(1 downto 0);
+  LED(0)                <= gpio_out(2);
 
 ----------------------------------------------------------
 ------                LED Control                  -------
 ----------------------------------------------------------
 
 
-  LED <= SW;
+  LED(3 downto 1) <= SW(3 downto 1);
 
 
 ----------------------------------------------------------

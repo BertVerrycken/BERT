@@ -34,6 +34,7 @@ port(   -- Clock and Reset --
         clk:            in  std_logic;
         rst_n:          in  std_logic;
         -- AXI Lite master interface
+        start_stop:     in  boolean;
         axilm_m2s:      out axil_m2s_t;
         axilm_s2m:      in  axil_s2m_t
     );

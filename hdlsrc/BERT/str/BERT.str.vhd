@@ -73,6 +73,7 @@ architecture str of BERT is
        axils_m2s:       in  axil_m2s_t;
        axils_s2m:       out axil_s2m_t;
        -- A4988 stepper driver IC --
+       motor_active:    out std_logic;
        step:            out std_logic;
        dir:             out std_logic
        );
@@ -84,6 +85,7 @@ architecture str of BERT is
   component axim_wrap
   port(clk:             in  std_logic;
        rst_n:           in  std_logic;
+       start_stop:      in  boolean;
        axilm_m2s:       out axil_m2s_t;
        axilm_s2m:       in  axil_s2m_t
        );
@@ -121,8 +123,14 @@ architecture str of BERT is
   -- Arbiter to slave
   signal axils_m2s:     axil_m2s_t;
   signal axils_s2m:     axil_s2m_t;
+  -- Input (edge) that initiates start and stop of the motor
+  signal start_stop:    boolean;
+  signal motor_active:  std_logic;
 
 begin
+
+  start_stop            <= (gpio_in_clean(0) = '1');
+  gpio_out(2)           <= motor_active;
 
   -- ===============================================
   -- ==== Debouncer                             ====
@@ -164,6 +172,7 @@ begin
            axils_wsel   => axils_wsel,
            axils_m2s    => axils_m2s,
            axils_s2m    => axils_s2m,
+           motor_active => motor_active,
            step         => gpio_out(0),
            dir          => gpio_out(1)
            );
@@ -175,6 +184,7 @@ begin
   i_axim_wrap: axim_wrap
   port map(clk          => sysclk,
            rst_n        => sysrst_n,
+           start_stop   => start_stop,
            axilm_m2s    => axilm_m2s,
            axilm_s2m    => axilm_s2m
            );

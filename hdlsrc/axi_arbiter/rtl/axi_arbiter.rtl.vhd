@@ -37,7 +37,7 @@ begin
   -- AXI Lite Master (axilm) slave to master (s2m) is the slave answer
   axilm_s2m             <= axils_s2m;
 
-  axils_rsel            <= true;
-  axils_wsel            <= true;
+  axils_rsel            <= (axilm_m2s.ar.valid = '1');
+  axils_wsel            <= (axilm_m2s.aw.valid = '1');
 
 end architecture;
